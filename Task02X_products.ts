@@ -1,9 +1,11 @@
 import { ProductDraft } from "@commercetools/platform-sdk";
 import {
     createProduct,
-    //updateProduct,
+    updateProduct,
     getProductById,
     getProductByKey,
+    deleteProductById,
+    getProducts
 } from "./handson/product";
 import { log } from "./utils/logger";
 
@@ -70,12 +72,12 @@ const customerDraftForAddAddress: address = {
 const id:string = "94778518-bacb-4d35-8014-bcad6bc7d5c4";
 
 //createProduct(productDraft).then(log).catch(log);
-// updateCustomer(customerDraftForAddAddress,id).then(log).catch(log);
-//updateCustomerAddress(customerDraftForAddAddress,id).then(log).catch(log);
-//removeCustomerAddress(id).then(log).catch(log);
-getProductById(id).then(log).catch(log);
-//getCustomerByKey(customerDraft.key!).then(log).catch(log);
 
+//getProductById(id).then(log).catch(log);
+//getProductByKey("85582").then(log).catch(log);
+//deleteProductById(id).then(log).catch(log);
+getProducts().then(log).catch(log);
+//updateProduct(id).then(log).catch(log);
 // getCustomerByKey(customerDraft.key!)
 //     .then(createCustomerToken)
 //     .then(confirmCustomerEmail)

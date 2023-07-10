@@ -9,6 +9,13 @@ export const getCustomerById = (ID: string): Promise<ClientResponse<Customer>> =
         .execute();
 }
 
+export const getCustomers = (): Promise<ClientResponse<any>> => {
+    return apiRoot
+        .customers()
+        .get()
+        .execute();
+}
+
 export const getCustomerByKey = (key: string): Promise<ClientResponse<Customer>> => {
     return apiRoot
         .customers()
@@ -26,8 +33,9 @@ export const createCustomer = (customerDraft: CustomerDraft): Promise<ClientResp
         .execute();
 }
 
-export const updateCustomer = (address: any,ID: string): Promise<ClientResponse<Customer>> => {
-    return getCustomerById(ID).then(customer => apiRoot
+export const updateCustomer = async (address: any,ID: string): Promise<ClientResponse<Customer>> => {
+    const customer = await getCustomerById(ID);
+    return await apiRoot
         .customers()
         .withId({ ID })
         .post({
@@ -35,16 +43,30 @@ export const updateCustomer = (address: any,ID: string): Promise<ClientResponse<
                 version: customer.body.version,
                 actions: [{
                     action: "addAddress",
-                    address:address                
+                    address: address
                 }]
             }
         })
-        .execute()
-    );
+        .execute();
 }
 
-export const updateCustomerAddress = (address: any,ID: string): Promise<ClientResponse<Customer>> => {
-    return getCustomerById(ID).then(customer => apiRoot
+export const deleteCustomerById = async (ID: string): Promise<ClientResponse<Customer>> => {
+    const customer = await getCustomerById(ID);
+    return await apiRoot
+        .customers()
+        .withId({ ID })
+        .delete({
+            queryArgs: {
+                version: customer.body.version
+            }
+        })
+        .execute();
+}
+
+
+export const updateCustomerAddress = async (address: any,ID: string): Promise<ClientResponse<Customer>> => {
+    const customer = await getCustomerById(ID);
+    return await apiRoot
         .customers()
         .withId({ ID })
         .post({
@@ -53,16 +75,16 @@ export const updateCustomerAddress = (address: any,ID: string): Promise<ClientRe
                 actions: [{
                     action: "changeAddress",
                     addressId: customer.body.addresses[0].id,
-                    address: address                
+                    address: address
                 }]
             }
         })
-        .execute()
-    );
+        .execute();
 }
 
-export const removeCustomerAddress = (ID: string): Promise<ClientResponse<Customer>> => {
-    return getCustomerById(ID).then(customer => apiRoot
+export const removeCustomerAddress = async (ID: string): Promise<ClientResponse<Customer>> => {
+    const customer = await getCustomerById(ID);
+    return await apiRoot
         .customers()
         .withId({ ID })
         .post({
@@ -70,12 +92,11 @@ export const removeCustomerAddress = (ID: string): Promise<ClientResponse<Custom
                 version: customer.body.version,
                 actions: [{
                     action: "removeAddress",
-                    addressId: customer.body.addresses[0].id,               
+                    addressId: customer.body.addresses[0].id,
                 }]
             }
         })
-        .execute()
-    );
+        .execute();
 }
 
 export const createCustomerToken = (customer: ClientResponse<Customer>): Promise<ClientResponse<CustomerToken>> => {
