@@ -3,9 +3,9 @@ import { getStoreByKey, getCustomersInStore, createInStoreCart } from "./handson
 import { getCustomerByKey } from "./handson/customer";
 import { log } from "./utils/logger";
 
-const storeKey = "berlin-store";
+const storeKey = "default";
 
-// getStoreByKey(storeKey).then(log).catch(log);
+//getStoreByKey(storeKey).then(log).catch(log);
 
 // getCustomersInStore(storeKey)
 //     .then(customers => {
@@ -16,10 +16,10 @@ const storeKey = "berlin-store";
 //     })
 //     .catch(log);
 
-// getCustomerByKey("tt-customer")
-//     .then(customer => {
-//         createInStoreCart(storeKey, customer)
-//             .then(log)
-//             .catch(log);
-//     })
-//     .catch(log);
+getCustomerByKey("tt-customer7")
+    .then(customer => {
+        createInStoreCart(storeKey, customer)
+            .then(log)
+            .catch(log);
+    })
+    .catch(log);

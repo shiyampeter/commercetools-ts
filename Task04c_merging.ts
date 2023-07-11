@@ -7,11 +7,11 @@ const customerKey = "tt-customer";
 const mergingProcessTest = async () => {
     let anonymousCart = await checkout.createAnonymousCart();
 
-    let customerCart = await checkout.createCart(customerKey);
+    let customerCart = await checkout.createCart("798b147c-538f-4886-8e1e-e4d62779d787");
 
-    anonymousCart = await checkout.addLineItemsToCart(anonymousCart.body.id, ['tulip-seed-box', 'tulip-seed-box', 'tulip-seed-box']);
+    anonymousCart = await checkout.addLineItemsToCart(anonymousCart.body.id, [ "A0E200000002BFW"]);
 
-    customerCart = await checkout.addLineItemsToCart(customerCart.body.id, ['tulip-seed-box', 'tulip-seed-sack', 'tulip-seed-package']);
+    customerCart = await checkout.addLineItemsToCart(customerCart.body.id, ["A0E200000002EGG"]);
 
     log("Anonymous Cart: " + anonymousCart.body.id);
     log("Customer Cart: " + customerCart.body.id);
@@ -28,7 +28,7 @@ const mergingProcessTest = async () => {
 };
 
 mergingProcessTest()
-    .then((cart) => {
+    .then((cart) => { 
         log("Active cart: " + cart!.id);
         cart!.lineItems.forEach(item => {
             log(item.variant.sku + " :" + item.quantity);

@@ -1,9 +1,21 @@
 import { ClientResponse, Cart, CustomerSignin, CustomerSignInResult, Order, OrderFromCartDraft, OrderState } from "@commercetools/platform-sdk";
 import { apiRoot } from "./client";
-import { getCustomerByKey } from "./customer";
+import { getCustomerById } from "./customer";
 
-export const createCart = (customerKey: string): Promise<ClientResponse<Cart>> => {
-    throw new Error("Function not implemented");
+export const createCart = async (ID: string): Promise<ClientResponse<Cart>> => {
+    const customer = await getCustomerById(ID);
+    return await apiRoot
+        .carts()
+        .post({
+            body: {
+                currency: "EUR",
+                country: "DE",
+                customerId: customer.body.id,
+                customerEmail: customer.body.email,
+                shippingAddress: customer.body.addresses.find(address => address.id === customer.body.defaultShippingAddressId)
+            }
+        })
+        .execute();
 }
 
 export const createAnonymousCart = (): Promise<ClientResponse<Cart>> =>
@@ -32,8 +44,28 @@ export const getCartById = (ID: string): Promise<ClientResponse<Cart>> =>
         .get()
         .execute();
 
-export const addLineItemsToCart = (cartId: string, arrayOfSKUs: Array<string>): Promise<ClientResponse<Cart>> => {
-    throw new Error("Function not implemented");
+export const addLineItemsToCart = async (cartId: string, arrayOfSKUs: Array<string>): Promise<ClientResponse<Cart>> => {
+    const cart = await getCartById(cartId);
+    return await apiRoot
+        .carts()
+        .withId({ ID: cartId })
+        .post({
+            body: {
+                version: cart.body.version,
+                actions: arrayOfSKUs.map(sku => {
+                    return {
+                        action: "addLineItem",
+                        sku,
+                        taxCategory : {
+                            typeId : "tax-category",
+                            id : "57tIxQVo"
+                          },
+                    };
+                }),
+                
+            }
+        })
+        .execute();
 }
 
 export const addDiscountCodeToCart = (cartId: string, discountCode: string): Promise<ClientResponse<Cart>> => {
@@ -105,8 +137,13 @@ export const setShippingMethod = async (cartId: string): Promise<ClientResponse<
 }
 
 
-export const createOrderFromCart = (cartId: string): Promise<ClientResponse<Order>> => {
-    throw new Error("Function not implemented");
+export const createOrderFromCart = async(cartId: string): Promise<ClientResponse<Order>> => {            
+    return apiRoot
+        .orders()
+        .post({
+            body:await createOrderFromCartDraft(cartId)       
+        })
+        .execute()
 }
 
 const createOrderFromCartDraft = (cartId: string): Promise<OrderFromCartDraft> =>
